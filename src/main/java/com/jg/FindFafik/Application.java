@@ -2,12 +2,11 @@ package com.jg.FindFafik;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 @SpringBootApplication
-public class FindFafikApplication {
-
+public class Application extends SpringBootServletInitializer {
 	public static void main(String[] args) {
-		SpringApplication.run(FindFafikApplication.class, args);
+		SpringApplication.run(Application.class, args);
 	}
-
 }

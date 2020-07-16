@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap core CSS-->
+    <link th:href="@{/assets/css/bootstrap.css}" rel="stylesheet"/>
+
+    <title>Find Fafik</title>
+</head>
+
+<body>
+
+<div th:replace="navbar"></div>
+
+<div class="container-fluid">
+    <div class="row">
+<!--        <nav class="col-md-2 d-none d-md-block bg-light sidebar">-->
+<!--            <div class="sidebar-sticky">-->
+<!--                <ul class="nav flex-column">-->
+<!--                    <li class="nav-item">-->
+<!--                        <div th:replace="advertisementForm"></div>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--        </nav>-->
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+<!--            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">-->
+<!--                <h1 class="h2">Mapa zaginionych Fafików... poniżej</h1>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash;Google Maps Section&ndash;&gt;-->
+<!--            <canvas class="my-4" id="myChart" width="900" height="380"></canvas>-->
+
+            <h2>Twoje ogłoszenia</h2>
+            <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                    <thead>
+                    <tr>
+                        <th>Usuń</th>
+                        <th>Data</th>
+                        <th>Zwierzak</th>
+                        <th>Opis</th>
+                        <th>Miasto</th>
+                        <th>Odpowiedz</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="advert: ${allAdverts}">
+                        <td>X</td>
+                        <td th:text="${advert.dateOfPublication}" />
+                        <td th:text="${advert.title}" />
+                        <td th:text="${advert.contents}" />
+                        <td th:text="${advert.city}" />
+                        <td>ReplyLink</td>
+                    </tr>
+                    <tr>
+                        <td>1,007</td>
+                        <td>sagittis</td>
+                        <td>ipsum</td>
+                        <td>Praesent</td>
+                        <td>mauris</td>
+                        <td>mauris</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</div>
+
+<div th:replace="footer"></div>
+
+<script th:href="@{/assets/js/bootstrap.js}"></script>
+
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap core CSS-->
+    <link th:href="@{/assets/css/bootstrap.css}" rel="stylesheet"/>
+
+    <title>Find Fafik</title>
+</head>
+
+<body>
+
+<div th:replace="navbar"></div>
+
+<div>
+    <h1>Gratulacje!</h1>
+    <p>
+        Zarejestrowałeś nowe konto użytkownika!
+    </p>
+    <iframe src="https://giphy.com/embed/F9DzQnxx6ZZNm"
+            width="480" height="230" frameBorder="0" class="giphy-embed"
+            allowFullScreen></iframe>
+</div>
+
+<div th:replace="footer"></div>
+
+<script th:href="@{/assets/css/js/bootstrap.js}"></script>
+
+</body>
+</html>

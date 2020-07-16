@@ -1,0 +1,136 @@
+<div id="map"></div>
+
+<script th:inline="javascript">
+
+    /*<![CDATA[*/
+    var adverts = /*[[${allAdverts}]]*/ 'adverts';
+    var advertsSize = /*[[${allAdvertsSize}]]*/ 'allAdvertsSize';
+    /*]]>*/
+    var markers = [];
+
+    // Import adverts from database
+    function makeMarkers(adverts) {
+        for (let i = 0; i < advertsSize; i++) {
+            markers[i] = {
+                position:
+                    {
+                        lat: adverts[i].latitude,
+                        lng: adverts[i].longitude
+                    },
+                content: adverts[i].contents,
+                icon: adverts[i].icon
+            }
+        }
+    }
+
+    // Map initializer
+    var map;
+    var onClickMarker;
+    var currentMarker;
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 51.255309, lng: 22.577467},
+            zoom: 11
+        });
+
+        // Listen for click on map to add a Advert location
+        map.addListener('click', function (event) {
+            if (currentMarker) {
+                onClickMarker.setMap(null);
+                onClickMarker = new google.maps.Marker({
+                    map: map,
+                    position: {lat: event.latLng.lat(), lng: event.latLng.lng()},
+                    //TODO
+                    //implement method event for dragging - to set new LatLng after drag
+                    draggable: true,
+                    animation: google.maps.Animation.DROP
+                });
+                currentMarker = this;
+            } else {
+                onClickMarker = new google.maps.Marker({
+                    map: map,
+                    position: {lat: event.latLng.lat(), lng: event.latLng.lng()},
+                    draggable: true,
+                    animation: google.maps.Animation.DROP,
+                });
+                currentMarker = this;
+            }
+            ;
+            // var onClickMarker = new google.maps.Marker({
+            //     position: {lat: 51.255309, lng: 22.577467},
+            //     draggable: true,
+            //     animation: google.maps.Animation.DROP,
+            //     map: map
+            // });
+            // if(onClickMarker){
+            //     console.log(onClickMarker.position.lat);
+            //     onClickMarker.setMap(null);
+            // } else {
+            //     var onClickMarker = new google.maps.Marker({
+            //         position: {lat: 51.255309, lng: 22.577467},
+            //         draggable: true,
+            //         animation: google.maps.Animation.DROP,
+            //         map: map
+            //     });
+            // };
+            // onClickMarker.position.lat = event.latLng.lat();
+            // onClickMarker.position.lat = event.latLng.lng();
+            // // Adds marker to 'map'
+            // onClickMarker.setMap(map);
+            document.getElementById("addLat").setAttribute("value", event.latLng.lat());
+            document.getElementById("addLng").setAttribute("value", event.latLng.lng());
+        });
+
+        map.addListener(onClickMarker, 'dragend', function (event) {
+            console.log('a marker is dragged');
+            console.log(currentMarker.getPosition().lat());
+            document.getElementById("addLat").setAttribute("value", onClickMarker.position.lat());
+            document.getElementById("addLng").setAttribute("value", onClickMarker.position.lng());
+        });
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    map.setCenter({lat: position.coords.latitude, lng: position.coords.longitude});
+                    // document.getElementById('geolocation').innerHTML = " " + position.coords.latitude + " " + position.coords.longitude;
+                }
+            );
+        } else {
+            document.getElementById('geolocation').innerHTML = "Geolokalizacja nie działa...";
+        }
+
+        makeMarkers(adverts);
+
+        for (var i = 0; i < markers.length; i++) {
+            addMarker(markers[i]);
+        }
+
+        function addMarker(markerData) {
+            var marker = new google.maps.Marker({
+                position: markerData.position,
+                map: map
+            });
+
+            // Check for custom icon
+            if (markerData.icon) {
+                marker.setIcon(markerData.icon);
+            }
+
+            // Check for custom content
+            if (markerData.content) {
+                var infoWindow = new google.maps.InfoWindow({
+                    content: markerData.content
+                });
+
+                marker.addListener('click', function () {
+                    infoWindow.open(map, marker);
+                });
+            }
+        }
+
+    }
+
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOJhA1FDPg6W3sByZvmOUmoFKgYF1_EGU&callback=initMap"
+        async defer></script>
