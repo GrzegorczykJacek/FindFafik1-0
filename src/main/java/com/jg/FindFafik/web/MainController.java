@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -50,22 +51,22 @@ public class MainController {
         return principal;
     }
 
-    @PreAuthorize("hasPermission(#id, 'Advert', 'read')")
-    @GetMapping("/advertisements")
-    public String advertisement(Model model) {
-
-        final List<Advertisement> allAdverts = advertisementRepository.findAll();
-
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        final MyUserPrincipal principal = (MyUserPrincipal) authentication.getPrincipal();
-        final String userName = principal.getUsername();
-        final Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        System.out.println(authorities);
-
-        model.addAttribute("allAdverts", allAdverts);
-        model.addAttribute("username", userName);
-        return "advertisements";
-    }
+//    @PreAuthorize("hasPermission(#id, 'Advert', 'read')")
+//    @GetMapping("/my-advertisements")
+//    public String advertisement(Model model) {
+//
+//        final List<Advertisement> allAdverts = advertisementRepository.findAll();
+//
+//        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        final MyUserPrincipal principal = (MyUserPrincipal) authentication.getPrincipal();
+//        final String userName = principal.getUsername();
+//        final Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+//        System.out.println(authorities);
+//
+//        model.addAttribute("allAdverts", allAdverts);
+//        model.addAttribute("username", userName);
+//        return "advertisements";
+//    }
 
     @GetMapping("/accessDenied")
     public String accessDenied() {
@@ -133,6 +134,9 @@ public class MainController {
     @PreAuthorize("hasPermission(#id, 'Advert', 'read')")
     @RequestMapping("/advertisementList")
     public String advertisementList(Model model) {
+
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+
         final String userName = myAuth.getUserName();
         model.addAttribute("username", userName);
         final Long userId = myAuth.getUser().getId();

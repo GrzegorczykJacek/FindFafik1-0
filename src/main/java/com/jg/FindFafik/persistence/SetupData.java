@@ -2,6 +2,7 @@ package com.jg.FindFafik.persistence;
 
 import com.jg.FindFafik.persistence.dao.AdvertisementRepository;
 import com.jg.FindFafik.persistence.dao.PrivilegeRepository;
+import com.jg.FindFafik.persistence.dao.RoleRepository;
 import com.jg.FindFafik.persistence.dao.UserRepository;
 import com.jg.FindFafik.persistence.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 
 @Component
 public class SetupData {
@@ -29,11 +31,24 @@ public class SetupData {
     @Autowired
     private AdvertisementRepository advertisementRepository;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
     @PostConstruct
     public void init() {
         initPrivileges();
+        initRoles();
         initUsers();
         initAdvertisements();
+    }
+
+    private void initRoles() {
+        final Role roleAdmin = new Role();
+        roleAdmin.setRole("ADMIN");
+        roleRepository.save(roleAdmin);
+        final Role roleUser = new Role();
+        roleUser.setRole("USER");
+        roleRepository.save(roleUser);
     }
 
     private void initUsers() {
@@ -42,16 +57,25 @@ public class SetupData {
         final Privilege privilege3 = privilegeRepository.findByName("USER_READ_PRIVILEGE");
         final Privilege privilege4 = privilegeRepository.findByName("USER_WRITE_PRIVILEGE");
 
+
         final User user1 = new User();
         user1.setUsername("Dorota");
         user1.setPassword(encoder.encode("passDorota"));
-     user1.setPrivileges(new HashSet<>(Arrays.asList(privilege1, privilege2, privilege3, privilege4)));
+        user1.setPrivileges(new HashSet<>(Arrays.asList(privilege1, privilege2, privilege3, privilege4)));
+        Set<Role> dorotaRoles = new HashSet<>();
+        dorotaRoles.add(roleRepository.findByRole("ADMIN"));
+        dorotaRoles.add(roleRepository.findByRole("USER"));
+        user1.setRoles(dorotaRoles);
         userRepository.save(user1);
 
         final User user2 = new User();
         user2.setUsername("Jacek");
         user2.setPassword(encoder.encode("passJacek"));
         user2.setPrivileges(new HashSet<>(Arrays.asList(privilege1, privilege2, privilege3, privilege4)));
+        Set<Role> jacekRoles = new HashSet<>();
+        jacekRoles.add(roleRepository.findByRole("ADMIN"));
+        jacekRoles.add(roleRepository.findByRole("USER"));
+        user2.setRoles(jacekRoles);
         userRepository.save(user2);
     }
 
@@ -65,10 +89,10 @@ public class SetupData {
         advertisement.setCategory(Category.LOST);
         advertisement.setSpecies(Species.DOG);
         advertisement.setDateOfPublication(LocalDateTime.now());
-        advertisement.setEndDate(  advertisement.getDateOfPublication().plus(Duration.ofDays(30)));
+        advertisement.setEndDate(advertisement.getDateOfPublication().plus(Duration.ofDays(30)));
         advertisement.setLatitude(51.2246013);
         advertisement.setLongitude(22.4957823);
-        advertisement.setUser(userRepository.getOne(5L));
+        advertisement.setUser(userRepository.findByUsername("Jacek"));
         advertisement.setIcon("assets/img/marker-icons/dog.png");
         advertisementRepository.save(advertisement);
 
@@ -79,7 +103,7 @@ public class SetupData {
         advertisement1.setSpecies(Species.CAT);
         advertisement1.setDateOfPublication(LocalDateTime.now());
         advertisement1.setEndDate(advertisement.getDateOfPublication().plus(Duration.ofDays(30)));
-        advertisement1.setUser(userRepository.getOne(6L));
+        advertisement1.setUser(userRepository.findByUsername("Dorota"));
         advertisement1.setLatitude(51.2536688);
         advertisement1.setLongitude(22.5766788);
         advertisement1.setIcon("assets/img/marker-icons/cat.png");
