@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap core CSS-->
-    <link th:href="@{/assets/css/bootstrap.css}" rel="stylesheet"/>
+    <link th:href="@{assets/static/css/bootstrap.css}" rel="stylesheet" type="text/css"/>
 
     <title>Find Fafik</title>
 </head>
@@ -51,14 +51,12 @@
 
 <div th:replace="footer"></div>
 
-<!--    <script th:href="@{/assets/js/bootstrap.js}"></script>-->
-
 <div class="row blockDisplay">
     <div class="column_half left_half"></div>
     <div class="column_half right_half"></div>
 </div>
 
-<!--    <script src="js/bootstrap.js"></script>-->
+<script th:href="@{/assets/static/js/bootstrap.js}"></script>
 
 </body>
 </html>

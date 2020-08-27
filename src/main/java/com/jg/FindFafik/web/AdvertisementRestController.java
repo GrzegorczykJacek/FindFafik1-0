@@ -71,7 +71,4 @@ public class AdvertisementRestController {
         advertisementRepository.deleteById(id);
     }
 
-    //TODO
-    // Delete by Id(by user), update by id, put by id(replace)
-
 }
