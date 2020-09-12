@@ -1,25 +1,21 @@
-    package com.jg.FindFafik.web;
+package com.jg.FindFafik.web;
 
-import com.jg.FindFafik.persistence.dao.UserRepository;
 import com.jg.FindFafik.persistence.dao.AdvertisementRepository;
+import com.jg.FindFafik.persistence.dao.UserRepository;
 import com.jg.FindFafik.persistence.model.Advertisement;
 import com.jg.FindFafik.persistence.model.User;
 import com.jg.FindFafik.security.MyAuthenticationService;
 import com.jg.FindFafik.security.MyUserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -51,22 +47,6 @@ public class MainController {
         return principal;
     }
 
-//    @PreAuthorize("hasPermission(#id, 'Advert', 'read')")
-//    @GetMapping("/my-advertisements")
-//    public String advertisement(Model model) {
-//
-//        final List<Advertisement> allAdverts = advertisementRepository.findAll();
-//
-//        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        final MyUserPrincipal principal = (MyUserPrincipal) authentication.getPrincipal();
-//        final String userName = principal.getUsername();
-//        final Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-//        System.out.println(authorities);
-//
-//        model.addAttribute("allAdverts", allAdverts);
-//        model.addAttribute("username", userName);
-//        return "advertisements";
-//    }
 
     @GetMapping("/accessDenied")
     public String accessDenied() {
@@ -100,14 +80,6 @@ public class MainController {
         return "show-added-user";
     }
 
-//    @PostMapping("/userSubmit")
-//    public String userSubmit(@ModelAttribute User user) {
-//        String pass = user.getPassword();
-//        user.setPassword(encoder.encode(pass));
-//        userRepository.save(user);
-//        return "show-added-user";
-//    }
-
     @PreAuthorize("hasPermission(#id, 'Advert', 'write')")
     @GetMapping("/advertisementForm")
     public String advertisememntForm(Model model) {
@@ -131,16 +103,49 @@ public class MainController {
         return "index";
     }
 
+    // Returns advertisement list view for authorized user
     @PreAuthorize("hasPermission(#id, 'Advert', 'read')")
     @RequestMapping("/advertisementList")
     public String advertisementList(Model model) {
-
-        System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
-
         final String userName = myAuth.getUserName();
         model.addAttribute("username", userName);
         final Long userId = myAuth.getUser().getId();
         model.addAttribute("advertisementList", advertisementRepository.findByUserId(userId));
         return "advertisementList";
+    }
+
+    // Returns advertisement view for update
+    @PreAuthorize("hasPermission(#id, 'Advert', 'read')")
+    @RequestMapping("/advertisementUpdate/{addId}")
+    public String advertisementById(@PathVariable final Long addId, Model model) {
+        final String userName = myAuth.getUserName();
+        model.addAttribute("username", userName);
+        final Advertisement advertisement = advertisementRepository.findById(addId).get();
+        model.addAttribute("advertisement", advertisement);
+        final List<Advertisement> advertisementList = new ArrayList<>();
+        advertisementList.add(advertisement);
+        model.addAttribute("allAdverts", advertisementList);
+        model.addAttribute("allAdvertsSize", advertisementList.size());
+        return "advertisementUpdate";
+    }
+
+    // Updates chosen advertisement (getOne() returns reference to wanted object)
+    @PreAuthorize("hasPermission(#id, 'Advert', 'write')")
+    @RequestMapping("/advertisementUpdateSubmit")
+    public String advertisementUpdateSubmit(@ModelAttribute Advertisement advertisement){
+        final Advertisement toUpdate = advertisementRepository.getOne(advertisement.getId());
+        toUpdate.setTitle(advertisement.getTitle());
+        toUpdate.setContents(advertisement.getContents());
+        toUpdate.setCity(advertisement.getCity());
+        toUpdate.setCategory(advertisement.getCategory());
+        toUpdate.setSpecies(advertisement.getSpecies());
+        toUpdate.setIcon(toUpdate.getIcon());
+        System.out.println(toUpdate.getIcon());
+        toUpdate.setLongitude(advertisement.getLongitude());
+        toUpdate.setLatitude(advertisement.getLatitude());
+        toUpdate.setDateOfPublication(LocalDateTime.now());
+        toUpdate.setEndDate(LocalDateTime.now().plusDays(30));
+        advertisementRepository.save(toUpdate);
+        return "index";
     }
 }

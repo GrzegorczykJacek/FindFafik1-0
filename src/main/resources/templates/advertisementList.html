@@ -38,7 +38,8 @@
                         <td th:text="${advert.getContents()}">Treść</td>
                         <td th:text="${advert.getCity()}">Miasto</td>
                         <td> <input type="submit" value="Zakończ"/>
-                            <input type="submit" value="Edytuj"/>
+                            <input type="submit" value="Edytuj" th:href="@{/advertisementUpdate/{id}(id=${advert.getId()})}"/>
+                            <a th:href="@{/advertisementUpdate/{id}(id=${advert.getId()})}">Edytuj</a>
                             <input type="submit" value="odśwież"/>
                         </td>
                     </tr>

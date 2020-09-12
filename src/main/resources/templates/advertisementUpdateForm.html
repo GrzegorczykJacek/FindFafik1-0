@@ -1,0 +1,28 @@
+<form action="#" th:action="@{/advertisementUpdateSubmit}" th:object="${advertisement}" method="post">
+    <p> Tytuł ogłoszenia: <input style="width: 80%" type="text" th:field="*{title}" th:value="${advertisement.title}"/></p>
+    <p> Treść ogłoszenia: <input style="width: 80%" type="text" th:field="*{contents}" th:value="${advertisement.contents}"/></p>
+    <input style="width: 80%" type="hidden" th:field="*{id}" th:value="${advertisement.id}"/>
+    <label for="category">Kategoria</label>
+    <select id="category" name="category" th:value="${advertisement.category}">
+        <option value="LOST">Zaginiony</option>
+        <option value="FOUND">Znaleziony</option>
+    </select>
+    <label for="species">Gatunek</label>
+    <select id="species" name="species" th:value="${advertisement.species}">
+        <option value="DOG">Pies</option>
+        <option value="CAT">Kot</option>
+        <option value="BIRD">Ptak</option>
+        <option value="OTHER">Inny</option>
+    </select>
+    <p> Miasto/miejscowość: <input style="width: 80%" type="text" th:field="*{city}" th:value="${advertisement.city}"/>
+    </p>
+    <p> Lokalizacja<br/>
+        <span style="...">(kliknij na mapie): </span>
+        <input id="addLat" value="klinknij w mapę żeby ustawić" style="width: 80%" type="text" th:field="*{latitude}" th:value="${advertisement.latitude}"/>
+    </p>
+    <p>
+        <input id="addLng" value="klinknij w mapę żeby ustawić" style="width: 80%" type="text" th:field="*{longitude}" th:value="${advertisement.longitude}"/></p>
+    <p><input type="submit" value="Zaktualizuj ogłoszenie"/>
+        <input type="reset" value="Reset"/>
+    </p>
+</form>
