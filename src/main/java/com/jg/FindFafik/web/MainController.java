@@ -6,6 +6,7 @@ import com.jg.FindFafik.persistence.model.Advertisement;
 import com.jg.FindFafik.persistence.model.User;
 import com.jg.FindFafik.security.MyAuthenticationService;
 import com.jg.FindFafik.security.MyUserPrincipal;
+import com.jg.FindFafik.service.PrivilegesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,6 +33,9 @@ public class MainController {
 
     @Autowired
     private MyAuthenticationService myAuth;
+
+    @Autowired
+    private PrivilegesService privilegesService;
 
     @PreAuthorize("hasPermission(#id, 'Advert', 'read')")
     @GetMapping("/advert/{id}")
@@ -73,10 +77,16 @@ public class MainController {
     }
 
     @RequestMapping(path = "/userSubmit", method = RequestMethod.POST)
-    public String userSubmit(@ModelAttribute User user) {
+    public String userSubmit(@ModelAttribute User user, Model model) {
         String pass = user.getPassword();
         user.setPassword(encoder.encode(pass));
         userRepository.save(user);
+        privilegesService.setPrivileges(user);
+
+        //TODO
+        // Set priviliges in user provileges service
+        final String userName = user.getUsername();
+        model.addAttribute("userName", userName);
         return "show-added-user";
     }
 
@@ -140,7 +150,6 @@ public class MainController {
         toUpdate.setCategory(advertisement.getCategory());
         toUpdate.setSpecies(advertisement.getSpecies());
         toUpdate.setIcon(toUpdate.getIcon());
-        System.out.println(toUpdate.getIcon());
         toUpdate.setLongitude(advertisement.getLongitude());
         toUpdate.setLatitude(advertisement.getLatitude());
         toUpdate.setDateOfPublication(LocalDateTime.now());

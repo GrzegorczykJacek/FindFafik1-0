@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap core CSS-->
-    <link th:href="@{/assets/css/bootstrap.css}" rel="stylesheet"/>
+    <link th:href="@{~/assets/static/css/bootstrap.css}" rel="stylesheet" type="text/css"/>
 
     <title>Find Fafik</title>
 </head>
@@ -18,7 +18,7 @@
 <div>
     <h1>Gratulacje!</h1>
     <p>
-        Zarejestrowałeś nowe konto użytkownika!
+        Zarejestrowałeś nowe konto użytkownika o loginie: <span th:text="${userName}"></span>!
     </p>
     <iframe src="https://giphy.com/embed/F9DzQnxx6ZZNm"
             width="480" height="230" frameBorder="0" class="giphy-embed"
@@ -27,7 +27,7 @@
 
 <div th:replace="footer"></div>
 
-<script th:href="@{/assets/css/js/bootstrap.js}"></script>
+<script th:href="@{~/assets/static/js/bootstrap.js}"></script>
 
 </body>
 </html>
